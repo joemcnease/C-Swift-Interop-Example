@@ -92,22 +92,23 @@ void fd2d_all_p(float *p, const int nx, const int nz, const float dx, const floa
     fill(d2pz, nx*nz, 0.);
 
     for (int it=0; it<nt-1; it++) {
+        int itidx = it*psize;
         for (int i=0; i<nz-1; i++) {
             for (int j=1; j<nx-2; j++) {
                 int idx = i*nx + j;
-                int pidx = it*psize + idx;
-                d2px[idx] = (p[pidx-1] - 2*p[pidx] + p[idx+1]) / (dx*dx);
+                int pidx = itidx + idx;
+                d2px[idx] = (p[pidx-1] - 2*p[pidx] + p[pidx+1]) / (dx*dx);
             }
         }
         for (int j=0; j<nx-1; j++) {
             for (int i=1; i<nz-2; i++) {
                 int idx = i*nx + j;
-                int pidx = it*psize + idx;
+                int pidx = itidx + idx;
                 d2pz[idx] = (p[pidx-nx] - 2*p[pidx] + p[pidx+nx]) / (dz*dz);
             }
         }
         for (int i=0; i<(nx*nz)-1; i++) {
-            int pidx = it*psize + i;
+            int pidx = itidx + i;
             pNew[i] = 2.*p[pidx] - pOld[i] + (dt*dt) * (c[i]*c[i]) * (d2px[i] + d2pz[i]);
         }
 
